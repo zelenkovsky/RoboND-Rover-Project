@@ -1,0 +1,25 @@
+version: "2.1"
+
+services:
+  robond:
+    build: .
+    image: robond
+    container_name: robond
+    volumes:
+      - ${HOME}/.Xauthority:/root/.Xauthority
+      - ${HOME}/.config/pulse:/root/.config/pulse
+      - ${XDG_RUNTIME_DIR}/pulse/native:/tmp/pulse
+      - .:/opt/RoboND
+    environment:
+      - DISPLAY
+      - LIBOVERLAY_SCROLLBAR=0
+      - PULSE_SERVER=unix:/tmp/pulse
+      - GTK2_RC_FILES=/usr/share/themes/Adwaita/gtk-2.0/gtkrc
+      - GTK_THEME=Adwaita
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true
+    privileged: true
+    network_mode: host
+    ports:
+      - 4567:4567
