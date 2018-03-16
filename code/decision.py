@@ -35,6 +35,37 @@ def decision_step(Rover):
                     Rover.steer = 0
                     Rover.mode = 'stop'
 
+        # If we found the sample
+        elif Rover.mode == 'chasing':
+
+            # Set steering to average angle clipped to the range +/- 15
+            Rover.steer = np.clip(np.mean(Rover.nav_angles * 180/np.pi), -15, 15)
+            print("Navigating to the target: " + str(Rover.steer))
+
+            if Rover.vel < Rover.max_vel:
+                # Set throttle value to throttle setting
+                Rover.throttle = Rover.throttle_set
+            else: # Else coast
+                Rover.throttle = 0
+            Rover.brake = 0
+
+            if Rover.nav_dists.size > 0:
+                target_angle = np.mean(Rover.nav_angles)
+                target_distance = np.max(Rover.nav_dists)
+
+                print("Target angle: " + str(target_angle))
+                print("Target distance: " + str(target_distance))
+
+                if target_distance < Rover.stop_forward:
+                    print("Stopping next to the target")
+                    # Set mode to "stop" and hit the brakes!
+                    Rover.throttle = 0
+                    # Set brake to stored brake value
+                    Rover.brake = Rover.brake_set
+                    Rover.steer = 0
+                    Rover.mode = 'stop'
+                    Rover.near_sample = True
+
         # If we're already in "stop" mode then make different decisions
         elif Rover.mode == 'stop':
             # If we're in stop mode but still moving keep braking
@@ -66,10 +97,10 @@ def decision_step(Rover):
         Rover.throttle = Rover.throttle_set
         Rover.steer = 0
         Rover.brake = 0
-        
+
     # If in a state where want to pickup a rock send pickup command
     if Rover.near_sample and Rover.vel == 0 and not Rover.picking_up:
         Rover.send_pickup = True
-    
+
     return Rover
 

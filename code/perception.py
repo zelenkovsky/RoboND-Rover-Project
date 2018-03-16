@@ -175,6 +175,12 @@ def perception_step(Rover):
 
         Rover.worldmap[rock_ycen, rock_xcen] = 255
         Rover.vision_image[:, :, 1] = rock_map * 255
+
+        # Spotted the rock, lets move towards the rock
+        # print ("!!!!!!!!!!!!!!!!! CHASING ROCK !!!!!!!!!!!!")
+        # Rover.nav_dists = dist
+        # Rover.nav_angles = rock_angle
+        # Rover.mode = 'chasing'
     else:
         Rover.vision_image[:, :, 1] = 0
 
